@@ -1,0 +1,6 @@
+# Derleme sonucu olusan gecici dosyalar
+mpl.exe
+lex.yy.c
+y.tab.c
+y.tab.h
+*.o

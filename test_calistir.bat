@@ -39,5 +39,17 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 echo.
+echo ---------------------------------------------------------
+echo.
+
+echo [TEST 4] Gecerli program test ediliyor (test.mpl):
+.\mpl.exe < test.mpl
+if %ERRORLEVEL% EQU 0 (
+    echo   --^> SONUC: BASARILI [Gecerli program dogrulandi: OK]
+) else (
+    echo   --^> SONUC: BASARISIZ
+)
+
+echo.
 echo =========================================================
 pause

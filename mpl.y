@@ -2,25 +2,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+extern FILE *yyin;
 extern int yylineno;
 extern char *yytext;
 int yylex(void);
 void yyerror(const char *s);
-int error_count = 0;
 %}
 
-%token PROGRAM BASLA BITIR
-%token DEGISKEN
+%token PROGRAM BASLA BITIR DEGISKEN
 %token TIP_SAYI TIP_VIRGUL TIP_YAZI
 %token EYER ISE DEGILSE SON_EYER
 %token DONGU YAP SON_DONGU
-%token IDENTIFIER
-%token INT_CONST FLOAT_CONST CHAR_CONST STRING_CONST
-
+%token IDENTIFIER INT_CONST FLOAT_CONST CHAR_CONST STRING_CONST
 %token EQ NEQ LE GE LAND LOR
-%token ASSIGN
 
-/* Operator Precedence and Associativity */
+/* Operator Oncelikleri (Asagidan yukariya dogru oncelik artar) */
 %left LOR
 %left LAND
 %left EQ NEQ
@@ -32,64 +28,58 @@ int error_count = 0;
 %%
 
 program:
-    PROGRAM IDENTIFIER BASLA statement_list BITIR
-    | PROGRAM IDENTIFIER BASLA BITIR
+    PROGRAM IDENTIFIER BASLA statements BITIR
     ;
 
-statement_list:
-    statement_list statement
-    | statement
+statements:
+    /* bos blok olabilir */
+    | statements statement
     ;
 
 statement:
-    var_declaration
-    | assignment_stmt
-    | conditional_stmt
-    | loop_stmt
+    var_decl
+    | assignment
+    | conditional
+    | loop
     | ';'
     ;
 
-/* Değişken Tanımlama: degisken a, b: sayi; veya degisken x = 10: sayi; */
-var_declaration:
-    DEGISKEN var_init_list ':' data_type ';'
+/* Degisken Tanimlama: degisken a, b = 5: sayi; */
+var_decl:
+    DEGISKEN var_list ':' data_type ';'
     ;
 
 data_type:
-    TIP_SAYI
-    | TIP_VIRGUL
-    | TIP_YAZI
+    TIP_SAYI | TIP_VIRGUL | TIP_YAZI
     ;
 
-var_init_list:
-    var_init_list ',' var_init_item
-    | var_init_item
+var_list:
+    var_item
+    | var_list ',' var_item
     ;
 
-var_init_item:
+var_item:
     IDENTIFIER
-    | IDENTIFIER ASSIGN expression
+    | IDENTIFIER '=' expression
     ;
 
-/* Değişkene Değer Atama: sayac = sayac + 1; */
-assignment_stmt:
-    IDENTIFIER ASSIGN expression ';'
+/* Atama: sayac = sayac + 1; */
+assignment:
+    IDENTIFIER '=' expression ';'
     ;
 
-/* Koşul Yapısı (If-Else) */
-conditional_stmt:
-    EYER '(' expression ')' ISE statement_list SON_EYER ';'
-    | EYER '(' expression ')' ISE statement_list DEGILSE statement_list SON_EYER ';'
-    | EYER '(' expression ')' ISE SON_EYER ';'
-    | EYER '(' expression ')' ISE DEGILSE statement_list SON_EYER ';'
+/* Kosul Yapisi: eyer (...) ise ... degilse ... son_eyer; */
+conditional:
+    EYER '(' expression ')' ISE statements SON_EYER ';'
+    | EYER '(' expression ')' ISE statements DEGILSE statements SON_EYER ';'
     ;
 
-/* Döngü Yapısı (While Loop) */
-loop_stmt:
-    DONGU '(' expression ')' YAP statement_list SON_DONGU ';'
-    | DONGU '(' expression ')' YAP SON_DONGU ';'
+/* Dongu Yapisi: dongu (...) yap ... son_dongu; */
+loop:
+    DONGU '(' expression ')' YAP statements SON_DONGU ';'
     ;
 
-/* Aritmetik, Mantıksal ve Karşılaştırma İfadeleri */
+/* Aritmetik, Karsilastirma ve Mantiksal Ifadeler */
 expression:
     expression '+' expression
     | expression '-' expression
@@ -107,39 +97,24 @@ expression:
     | '!' expression
     | '-' expression %prec UMINUS
     | '(' expression ')'
-    | primary_expr
-    ;
-
-primary_expr:
-    IDENTIFIER
-    | INT_CONST
-    | FLOAT_CONST
-    | CHAR_CONST
-    | STRING_CONST
+    | IDENTIFIER | INT_CONST | FLOAT_CONST | CHAR_CONST | STRING_CONST
     ;
 
 %%
 
 void yyerror(const char *s) {
-    error_count++;
     fprintf(stderr, "Syntax error at line %d: unexpected '%s'\n", yylineno, yytext);
 }
 
 int main(int argc, char **argv) {
-    if (argc > 1) {
-        extern FILE *yyin;
-        FILE *f = fopen(argv[1], "r");
-        if (!f) {
-            fprintf(stderr, "Hata: Dosya acilamadi: %s\n", argv[1]);
-            return 1;
-        }
-        yyin = f;
-    }
-
-    if (yyparse() == 0 && error_count == 0) {
-        printf("OK\n");
-        return 0;
-    } else {
+    if (argc > 1 && !(yyin = fopen(argv[1], "r"))) {
+        fprintf(stderr, "Hata: Dosya acilamadi: %s\n", argv[1]);
         return 1;
     }
+
+    if (yyparse() == 0) {
+        printf("OK\n");
+        return 0;
+    }
+    return 1;
 }

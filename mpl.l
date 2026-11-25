@@ -4,21 +4,29 @@
 #include "y.tab.h"
 #include "anahtar_kelimeler.h"
 
+/* Anahtar kelime -> Token eslestirme tablosu */
+typedef struct {
+    const char *kelime;
+    int token;
+} Keyword;
+
+static Keyword keywords[] = {
+    {KELIME_PROGRAM,   PROGRAM},   {KELIME_BASLA,     BASLA},
+    {KELIME_BITIR,     BITIR},     {KELIME_DEGISKEN,  DEGISKEN},
+    {KELIME_SAYI,      TIP_SAYI},  {KELIME_VIRGUL,    TIP_VIRGUL},
+    {KELIME_YAZI,      TIP_YAZI},  {KELIME_EYER,      EYER},
+    {KELIME_ISE,       ISE},       {KELIME_DEGILSE,   DEGILSE},
+    {KELIME_SON_EYER,  SON_EYER},  {KELIME_DONGU,     DONGU},
+    {KELIME_YAP,       YAP},       {KELIME_SON_DONGU, SON_DONGU}
+};
+
+/* Gelen kelimenin anahtar kelime mi yoksa degisken adi mi oldugunu bulur */
 int check_keyword(const char *s) {
-    if (strcmp(s, KELIME_PROGRAM) == 0) return PROGRAM;
-    if (strcmp(s, KELIME_BASLA) == 0) return BASLA;
-    if (strcmp(s, KELIME_BITIR) == 0) return BITIR;
-    if (strcmp(s, KELIME_DEGISKEN) == 0) return DEGISKEN;
-    if (strcmp(s, KELIME_SAYI) == 0) return TIP_SAYI;
-    if (strcmp(s, KELIME_VIRGUL) == 0) return TIP_VIRGUL;
-    if (strcmp(s, KELIME_YAZI) == 0) return TIP_YAZI;
-    if (strcmp(s, KELIME_EYER) == 0) return EYER;
-    if (strcmp(s, KELIME_ISE) == 0) return ISE;
-    if (strcmp(s, KELIME_DEGILSE) == 0) return DEGILSE;
-    if (strcmp(s, KELIME_SON_EYER) == 0) return SON_EYER;
-    if (strcmp(s, KELIME_DONGU) == 0) return DONGU;
-    if (strcmp(s, KELIME_YAP) == 0) return YAP;
-    if (strcmp(s, KELIME_SON_DONGU) == 0) return SON_DONGU;
+    int count = sizeof(keywords) / sizeof(keywords[0]);
+    for (int i = 0; i < count; i++) {
+        if (strcmp(s, keywords[i].kelime) == 0)
+            return keywords[i].token;
+    }
     return IDENTIFIER;
 }
 %}
@@ -26,18 +34,13 @@ int check_keyword(const char *s) {
 %option noyywrap
 %option yylineno
 
-DIGIT       [0-9]
-LETTER      [a-zA-Z_]
-ID          {LETTER}({LETTER}|{DIGIT})*
-
 %%
 
-"#"[^\n]*               { /* Yorum satırları (# ile başlayanlar yoksayılır) */ }
-"//"[^\n]*              { /* Yorum satırları (// ile başlayanlar da yoksayılır) */ }
-[ \t\r\n]+              { /* Boşluk ve yeni satırlar yoksayılır */ }
+("#"|"//")[^\n]*        { /* Yorum satirlari yoksayilir */ }
+[ \t\r\n]+              { /* Bosluk ve yeni satirlar yoksayilir */ }
 
-{DIGIT}+"."{DIGIT}+     { return FLOAT_CONST; }
-{DIGIT}+                { return INT_CONST; }
+[0-9]+"."[0-9]+         { return FLOAT_CONST; }
+[0-9]+                  { return INT_CONST; }
 '([^'\\\n]|\\.)'        { return CHAR_CONST; }
 \"([^\"\\\n]|\\.)*\"    { return STRING_CONST; }
 
@@ -47,24 +50,9 @@ ID          {LETTER}({LETTER}|{DIGIT})*
 ">="                    { return GE; }
 "&&"                    { return LAND; }
 "||"                    { return LOR; }
-"="                     { return ASSIGN; }
 
-"+"                     { return '+'; }
-"-"                     { return '-'; }
-"*"                     { return '*'; }
-"/"                     { return '/'; }
-"%"                     { return '%'; }
-"!"                     { return '!'; }
-"<"                     { return '<'; }
-">"                     { return '>'; }
-"("                     { return '('; }
-")"                     { return ')'; }
-":"                     { return ':'; }
-";"                     { return ';'; }
-","                     { return ','; }
-
-{ID}                    { return check_keyword(yytext); }
-
+[-+*/%!<>():;,=]        { return yytext[0]; }
+[a-zA-Z][a-zA-Z0-9_]*   { return check_keyword(yytext); }
 .                       { return yytext[0]; }
 
 %%

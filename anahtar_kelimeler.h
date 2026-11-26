@@ -18,7 +18,7 @@
 
 /* Veri Tipleri */
 #define KELIME_SAYI          "sayi"      /* Tamsayı (integer) */
-#define KELIME_VIRGUL        "virgul"    /* Ondalıklı sayı (float) */
+#define KELIME_VIRGUL        "ondalik"    /* Ondalıklı sayı (float) */
 #define KELIME_YAZI          "yazi"      /* Karakter/Metin (char) */
 
 /* Koşul İfadesi (If-Else) */

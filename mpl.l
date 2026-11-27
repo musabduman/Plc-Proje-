@@ -13,7 +13,7 @@ typedef struct {
 static Keyword keywords[] = {
     {KELIME_PROGRAM,   PROGRAM},   {KELIME_BASLA,     BASLA},
     {KELIME_BITIR,     BITIR},     {KELIME_DEGISKEN,  DEGISKEN},
-    {KELIME_SAYI,      TIP_SAYI},  {KELIME_VIRGUL,    TIP_VIRGUL},
+    {KELIME_SAYI,      TIP_SAYI},  {KELIME_ONDALIK,   TIP_ONDALIK},
     {KELIME_YAZI,      TIP_YAZI},  {KELIME_EYER,      EYER},
     {KELIME_ISE,       ISE},       {KELIME_DEGILSE,   DEGILSE},
     {KELIME_SON_EYER,  SON_EYER},  {KELIME_DONGU,     DONGU},

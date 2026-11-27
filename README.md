@@ -83,9 +83,9 @@ Dilin anahtar kelimelerini (örneğin `eyer` yerine `eger` veya `if`, `sayi` yer
 ```mpl
 program DenemeProgrami
 basla
-    # 1. Degisken tanimlama (sayi, virgul, yazi tipleri)
+    # 1. Degisken tanimlama (sayi, ondalik, yazi tipleri)
     degisken sayac, toplam: sayi;
-    degisken oran: virgul;
+    degisken oran: ondalik;
     degisken harf: yazi;
 
     # 2. Atamalar ve Aritmetik Islemler (+, -, *, /, %)

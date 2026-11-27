@@ -10,7 +10,7 @@ void yyerror(const char *s);
 %}
 
 %token PROGRAM BASLA BITIR DEGISKEN
-%token TIP_SAYI TIP_VIRGUL TIP_YAZI
+%token TIP_SAYI TIP_ONDALIK TIP_YAZI
 %token EYER ISE DEGILSE SON_EYER
 %token DONGU YAP SON_DONGU
 %token IDENTIFIER INT_CONST FLOAT_CONST CHAR_CONST STRING_CONST
@@ -50,7 +50,7 @@ var_decl:
     ;
 
 data_type:
-    TIP_SAYI | TIP_VIRGUL | TIP_YAZI
+    TIP_SAYI | TIP_ONDALIK | TIP_YAZI
     ;
 
 var_list:

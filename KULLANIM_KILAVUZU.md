@@ -27,7 +27,7 @@ Bu proje, **COM2043 Programming Languages Concepts** dersi için Flex (Lex) ve B
 #define KELIME_BITIR         "bitir"
 #define KELIME_DEGISKEN      "degisken"
 #define KELIME_SAYI          "sayi"      /* Örn: "tamsayi" veya "int" yapabilirsiniz */
-#define KELIME_VIRGUL        "virgul"    /* Örn: "ondalik" veya "float" yapabilirsiniz */
+#define KELIME_ONDALIK       "ondalik"   /* Örn: "float" yapabilirsiniz */
 #define KELIME_YAZI          "yazi"      /* Örn: "metin" veya "char" yapabilirsiniz */
 #define KELIME_EYER          "eyer"      /* Örn: "eger" veya "if" yapabilirsiniz */
 #define KELIME_ISE           "ise"       /* Örn: "then" yapabilirsiniz */
@@ -86,7 +86,7 @@ gcc y.tab.c lex.yy.c -o mpl.exe
 
 <var_declaration>   ::= "degisken" <var_init_list> ":" <data_type> ";"
 
-<data_type>         ::= "sayi" | "virgul" | "yazi"
+<data_type>         ::= "sayi" | "ondalik" | "yazi"
 
 <var_init_list>     ::= <var_init_list> "," <var_init_item>
                       | <var_init_item>

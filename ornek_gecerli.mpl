@@ -7,7 +7,7 @@ program Hesaplayici
 basla
     # 1. Degisken tanimlamalari (3 farkli veri tipi)
     degisken sayac, toplam: sayi;
-    degisken ortalama, carpan = 2.5: virgul;
+    degisken ortalama, carpan = 2.5: ondalik;
     degisken karakter: yazi;
     degisken durum: sayi;
 

@@ -1,6 +1,6 @@
 @echo off
 setlocal
-set "PATH=C:\msys64\usr\bin;C:\msys64\ucrt64\bin;%PATH%"
+set "PATH=C:\msys64\ucrt64\bin;%PATH%"
 
 echo [1/3] Bison calistiriliyor (mpl.y -^> y.tab.c, y.tab.h)...
 bison -d -y mpl.y

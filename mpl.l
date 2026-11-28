@@ -36,13 +36,17 @@ int check_keyword(const char *s) {
 
 %%
 
-("#"|"//")[^\n]*        { /* Yorum satirlari yoksayilir */ }
-[ \t\r\n]+              { /* Bosluk ve yeni satirlar yoksayilir */ }
+("#"|"//")[^\n]*        { /* Comment lines are ignored */ } /* Commands and whitespaces */
+[ \t\r\n]+              { /* Spaces and new lines are ignored */ }
 
-[0-9]+"."[0-9]+         { return FLOAT_CONST; }
-[0-9]+                  { return INT_CONST; }
-'([^'\\\n]|\\.)'        { return CHAR_CONST; }
-\"([^\"\\\n]|\\.)*\"    { return STRING_CONST; }
+[0-9]+"."[0-9]+         { return FLOAT_CONST; } /* Decimal literal */
+[0-9]+                  { return INT_CONST; } /*Integer literal */
+'([^'\\\n]|\\.)'        { return CHAR_CONST; } /* Character literal */
+\"([^\"\\\n]|\\.)*\"    { return STRING_CONST; } /* String literal */
+
+[-+*/%!<>():;,=]        { return yytext[0]; } /* Operators and punctuation */
+[a-zA-Z][a-zA-Z0-9_]*   { return check_keyword(yytext); } /* Identifier */
+.                       { return yytext[0]; }
 
 "=="                    { return EQ; }
 "!="                    { return NEQ; }
@@ -50,9 +54,5 @@ int check_keyword(const char *s) {
 ">="                    { return GE; }
 "&&"                    { return LAND; }
 "||"                    { return LOR; }
-
-[-+*/%!<>():;,=]        { return yytext[0]; }
-[a-zA-Z][a-zA-Z0-9_]*   { return check_keyword(yytext); }
-.                       { return yytext[0]; }
 
 %%
